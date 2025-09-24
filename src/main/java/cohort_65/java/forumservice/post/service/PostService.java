@@ -16,7 +16,7 @@ public interface PostService {
 
     boolean addLike(PostDto postDto, String id);
 
-    PostDto findPostsByAuthor(String author);
+    Set<PostDto> findPostsByAuthor(String author);
 
     CommentDto addNewComment(NewCommentDto newCommentDto, String author);
 
