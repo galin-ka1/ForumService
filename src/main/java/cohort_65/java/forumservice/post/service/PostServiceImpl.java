@@ -1,7 +1,7 @@
 package cohort_65.java.forumservice.post.service;
 
 import cohort_65.java.forumservice.post.dao.PostRepository;
-import cohort_65.java.forumservice.post.dto.CommentDto;
+import cohort_65.java.forumservice.post.dto.DatePeriodDto;
 import cohort_65.java.forumservice.post.dto.NewCommentDto;
 import cohort_65.java.forumservice.post.dto.NewPostDto;
 import cohort_65.java.forumservice.post.dto.PostDto;
@@ -12,10 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -33,83 +32,77 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto findPostById(String id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFoundException::new);
+    public PostDto getPostById(String id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         return modelMapper.map(post, PostDto.class);
     }
 
     @Override
-    public boolean addLike(PostDto postDto, String id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFoundException::new);
-
+    public void likePost(String id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         post.addLike();
         postRepository.save(post);
-
-        return true;
     }
-
-    @Override
-    public Set<PostDto> findPostsByAuthor(String author) {
-        List<Post> posts = postRepository.findAllByAuthor(author);
-        return posts.stream()
-                .map(post -> modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public CommentDto addNewComment(NewCommentDto newCommentDto, String author) {
-        Post post = postRepository.findById(newCommentDto.getPostId())
-                .orElseThrow(PostNotFoundException::new);
-
-        Comment comment = new Comment(author, newCommentDto.getMessage());
-        post.getComments().add(comment);
-        postRepository.save(post);
-
-        return modelMapper.map(comment, CommentDto.class);
-    }
-
-
-    @Override
-    public Set<PostDto> findPostsByTag(String tag) {
-        List<Post> posts = postRepository.findAllByTagsContaining(tag);
-        return posts.stream()
-                .map(post -> modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toSet());
-    }
-
 
     @Override
     public PostDto deletePostById(String id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFoundException::new);
-
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         postRepository.delete(post);
-
         return modelMapper.map(post, PostDto.class);
     }
 
     @Override
-    public Set<PostDto> findPostsByTimePeriod(LocalDateTime start, LocalDateTime end) {
-        List<Post> posts = postRepository.findAllByDateCreatedBetween(start, end);
-        return posts.stream()
-                .map(post -> modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public PostDto updatePost(PostDto postDto, String author) {
-        Post post = postRepository.findById(postDto.getId())
-                .orElseThrow(PostNotFoundException::new);
-
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
-        post.setTags(postDto.getTags());
-
-        postRepository.save(post);
-
+    public PostDto updatePostById(NewPostDto newPostDto, String id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        String content = newPostDto.getContent();
+        if (content != null) {
+            post.setContent(content);
+        }
+        String title = newPostDto.getTitle();
+        if (title != null) {
+            post.setTitle(title);
+        }
+        Set<String> tags = newPostDto.getTags();
+        if (tags != null) {
+            tags.forEach(post::addTag);
+        }
+        post = postRepository.save(post);
         return modelMapper.map(post, PostDto.class);
     }
 
+    @Override
+    public PostDto addComment(String id, String user, NewCommentDto newCommentDto) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Comment comment = new Comment(user, newCommentDto.getMessage());
+        post.addComment(comment);
+        post = postRepository.save(post);
+        return modelMapper.map(post, PostDto.class);
+    }
+
+    @Override
+    public Iterable<PostDto> getPostsByAuthor(String author) {
+        return StreamSupport
+                .stream(postRepository.findAllByAuthorIgnoreCase(author).spliterator(),
+                        false)
+                .map(post -> modelMapper.map(post, PostDto.class)).toList();
+    }
+
+    @Override
+    public Iterable<PostDto> getPostsByTags(Set<String> tags) {
+        return StreamSupport
+                .stream(postRepository.findAllByTagsIgnoreCaseIn(tags).spliterator(),
+                        false)
+                .map(post -> modelMapper.map(post, PostDto.class)).toList();
+    }
+
+    @Override
+    public Iterable<PostDto> getPostsByPeriod(DatePeriodDto datePeriodDto) {
+        return StreamSupport
+                .stream(postRepository
+                                .findAllByDateCreatedBetween(
+                                        datePeriodDto.getDateFrom(),
+                                        datePeriodDto.getDateTo()).spliterator(),
+                        false)
+                .map(post -> modelMapper.map(post, PostDto.class)).toList();
+    }
 }

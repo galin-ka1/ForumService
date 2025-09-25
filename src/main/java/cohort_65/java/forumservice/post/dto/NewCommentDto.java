@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewCommentDto {
-    private String postId;   // ID поста, к которому добавляем комментарий
     private String message;  // Текст комментария
 }
