@@ -11,6 +11,7 @@ import java.util.Set;
 @Getter
 @Document(collection = "users")
 public class UserAccount {
+    @Setter
     @Id
     String login;
     @Setter

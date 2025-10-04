@@ -72,4 +72,8 @@ public class PostController {
     public Iterable<PostDto> getPostsByPeriod(@RequestBody DatePeriodDto datePeriodDto) {
         return postService.getPostsByPeriod(datePeriodDto);
     }
+    @GetMapping("/posts/title/{title}")
+    public Iterable<PostDto> getPostsBzTitle(@PathVariable String title) {
+       return postService.getPostsByTitle(title);
+    }
 }

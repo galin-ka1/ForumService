@@ -4,6 +4,7 @@ import cohort_65.java.forumservice.post.model.Post;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public interface PostRepository extends MongoRepository<Post, String> {
@@ -13,4 +14,12 @@ public interface PostRepository extends MongoRepository<Post, String> {
     Iterable<Post> findAllByTagsIgnoreCaseIn(Set<String> tags);
 
     Iterable<Post> findAllByDateCreatedBetween(LocalDate dateCreated, LocalDate dateCreated2);
+
+    Object findByAuthor(String author1);
+
+    Object findByTagsIn(Set<String> tags);
+
+    Object findByDateCreatedBetween(LocalDateTime any, LocalDateTime any1);
+
+    Object findAllByTitleIgnoreCase(String t2);
 }

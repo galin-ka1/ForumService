@@ -26,4 +26,6 @@ public interface PostService {
     Iterable<PostDto> getPostsByTags(Set<String> tags);
 
     Iterable<PostDto> getPostsByPeriod(DatePeriodDto datePeriodDto);
+
+    Iterable<PostDto> getPostsByTitle(String title);
 }

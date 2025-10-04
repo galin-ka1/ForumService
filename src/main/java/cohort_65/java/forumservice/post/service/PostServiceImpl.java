@@ -104,4 +104,10 @@ public class PostServiceImpl implements PostService {
                         false)
                 .map(post -> modelMapper.map(post, PostDto.class)).toList();
     }
+
+    @Override
+    public Iterable<PostDto> getPostsByTitle(String title) {
+
+        return null;
+    }
 }

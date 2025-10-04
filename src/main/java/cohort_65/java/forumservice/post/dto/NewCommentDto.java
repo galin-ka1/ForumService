@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class NewCommentDto {
     private String message;  // Текст комментария
+
 }

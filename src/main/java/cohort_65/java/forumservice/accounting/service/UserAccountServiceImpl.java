@@ -9,6 +9,7 @@ import cohort_65.java.forumservice.accounting.dto.exception.UserNotFoundExceptio
 import cohort_65.java.forumservice.accounting.model.UserAccount;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,12 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     final UserAccountRepository userAccountRepository;
     final ModelMapper modelMapper;
+
+    @Autowired
+    public UserAccountServiceImpl(UserAccountRepository userAccountRepository ) {
+        this.userAccountRepository = userAccountRepository;
+
+    }
 
     @Override
     public UserDto register(UserRegisterDto userRegisterDto) {

@@ -26,6 +26,7 @@ public class Post {
     String content;
     @Setter
     String author;
+    @Setter
     LocalDateTime dateCreated = LocalDateTime.now();
     @Setter
     Set<String> tags = new HashSet<String>();
@@ -57,5 +58,11 @@ public class Post {
 
     public boolean removeComment(Comment comment) {
         return comments.remove(comment);
+    }
+
+    public void setId(String number) {}
+
+
+    public void setLikes(int i) {
     }
 }
