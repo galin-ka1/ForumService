@@ -48,9 +48,5 @@ public class UserAccountController {
                                      @PathVariable String role) {
         return userAccountService.changeRoleForUser(login, role,false);
     }
-    @PostMapping("/login")
-    public UserDto login(Principal principal){
-        return userAccountService.getUserByLogin(principal.getName());
 
-    }
 }
