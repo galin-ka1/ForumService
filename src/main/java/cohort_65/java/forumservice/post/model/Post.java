@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,6 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 public class Post {
-    @Id
     String id;
     @Setter
     String title;
@@ -27,7 +25,6 @@ public class Post {
     @Setter
     String author;
     LocalDateTime dateCreated = LocalDateTime.now();
-    @Setter
     Set<String> tags = new HashSet<String>();
     Integer likes = 0;
     List<Comment> comments = new ArrayList<Comment>();

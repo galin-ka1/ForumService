@@ -26,10 +26,9 @@ public class UserAccountServiceImpl implements UserAccountService {
             throw new UserExistsException();
         }
         UserAccount userAccount = modelMapper.map(userRegisterDto, UserAccount.class);
-
-        String password = passwordEncoder.encode(userRegisterDto.getPassword());
+        
+        String password = passwordEncoder.encode(userAccount.getPassword());
         userAccount.setPassword(password);
-
 
         userAccount = userAccountRepository.save(userAccount);
         return modelMapper.map(userAccount, UserDto.class);
@@ -71,5 +70,14 @@ public class UserAccountServiceImpl implements UserAccountService {
         boolean res = isAddRole ? userAccount.addRole(role) : userAccount.removeRole(role);
         if (res) userAccount = userAccountRepository.save(userAccount);
         return modelMapper.map(userAccount, UserDto.class);
+    }
+
+    @Override
+    public void changePassword(String name, String newPassword) {
+        UserAccount userAccount = userAccountRepository.findById(name)
+                .orElseThrow(UserNotFoundException::new);
+        String password = passwordEncoder.encode(newPassword);
+        userAccount.setPassword(password);
+        userAccountRepository.save(userAccount);
     }
 }

@@ -7,7 +7,6 @@ import cohort_65.java.forumservice.post.dto.PostDto;
 import cohort_65.java.forumservice.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -49,7 +48,7 @@ public class PostController {
     }
 
     @PutMapping("/post/{id}")
-    public PostDto updatePost(@P("id")@PathVariable String id, @RequestBody NewPostDto newPostDto) {
+    public PostDto updatePost(@PathVariable String id, @RequestBody NewPostDto newPostDto) {
         return postService.updatePostById(newPostDto, id);
     }
 
