@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAccount userAccount = userAccountRepository.findById(username).orElseThrow(UserNotFoundException::new);
+        UserAccount userAccount = userAccountRepository.findById(username) .orElseThrow(() -> new UserNotFoundException(username));
 
         Collection<String> authorities = userAccount.getRoles()
                 .stream()
