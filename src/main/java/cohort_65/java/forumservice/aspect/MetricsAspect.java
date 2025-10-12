@@ -36,7 +36,7 @@ public class MetricsAspect {
         return result;
     }
 
-    @Before("execution(* cohort_65.java.forumservice.accounting.service.UserAccountServiceImpl.register(..))")
+   // @Before("execution(* cohort_65.java.forumservice.accounting.service.UserAccountServiceImpl.register(..))")
     public void validateArgsForRegister(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         UserRegisterDto userRegisterDto = (UserRegisterDto) args[0];

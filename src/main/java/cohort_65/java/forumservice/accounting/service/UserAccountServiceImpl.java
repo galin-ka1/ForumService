@@ -23,7 +23,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserDto register(UserRegisterDto userRegisterDto) {
         if (userAccountRepository.existsById(userRegisterDto.getLogin())) {
-            throw new UserExistsException();
+            throw new UserExistsException(userRegisterDto.getLogin());
         }
         UserAccount userAccount = modelMapper.map(userRegisterDto, UserAccount.class);
         
@@ -37,14 +37,14 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserDto getUserByLogin(String login) {
         UserAccount userAccount = userAccountRepository.findById(login)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(login));
         return modelMapper.map(userAccount, UserDto.class);
     }
 
     @Override
     public UserDto removeUserByLogin(String login) {
         UserAccount userAccount = userAccountRepository.findById(login)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(login));
         userAccountRepository.delete(userAccount);
         return modelMapper.map(userAccount, UserDto.class);
     }
@@ -52,7 +52,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserDto updateUserByLogin(String login, UserUpdateDto userUpdateDto) {
         UserAccount userAccount = userAccountRepository.findById(login)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(login));
         if (userUpdateDto.getLastName() != null) {
             userAccount.setLastName(userUpdateDto.getLastName());
         }
@@ -66,7 +66,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserDto changeRoleForUser(String login, String role, boolean isAddRole) {
         UserAccount userAccount = userAccountRepository.findById(login)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(login));
         boolean res = isAddRole ? userAccount.addRole(role) : userAccount.removeRole(role);
         if (res) userAccount = userAccountRepository.save(userAccount);
         return modelMapper.map(userAccount, UserDto.class);
@@ -75,7 +75,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public void changePassword(String name, String newPassword) {
         UserAccount userAccount = userAccountRepository.findById(name)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(name));
         String password = passwordEncoder.encode(newPassword);
         userAccount.setPassword(password);
         userAccountRepository.save(userAccount);

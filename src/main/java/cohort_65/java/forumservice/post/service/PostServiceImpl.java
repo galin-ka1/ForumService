@@ -32,27 +32,27 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(String id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         return modelMapper.map(post, PostDto.class);
     }
 
     @Override
     public void likePost(String id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         post.addLike();
         postRepository.save(post);
     }
 
     @Override
     public PostDto deletePostById(String id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         postRepository.delete(post);
         return modelMapper.map(post, PostDto.class);
     }
 
     @Override
     public PostDto updatePostById(NewPostDto newPostDto, String id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         String content = newPostDto.getContent();
         if (content != null) {
             post.setContent(content);
@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto addComment(String id, String user, NewCommentDto newCommentDto) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         Comment comment = new Comment(user, newCommentDto.getMessage());
         post.addComment(comment);
         post = postRepository.save(post);

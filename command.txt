@@ -1,0 +1,2 @@
+docker build -t forumservice:1.0 -t forumservice:latest .
+docker run -p 8080:8080 -e MONGODB_URI="mongodb+srv://galinkagross_db_user:esPmODf6lBCaaXaj@cluster0.eix121q.mongodb.net/forumDB?retryWrites=true&w\=majority&appName\=Cluster0" forumservice:1.0
